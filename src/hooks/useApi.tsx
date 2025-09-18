@@ -17,7 +17,7 @@ export function useApi<T>() {
     setState({ data: null, loading: true, error: null });
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`http://localhost:5001${url}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         ...options,

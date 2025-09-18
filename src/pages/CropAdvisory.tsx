@@ -35,20 +35,37 @@ const CropAdvisory = () => {
       setLoading(true);
       setError(null);
       try {
+        const apiKey = import.meta.env.VITE_GOOGLE_TRANSLATE_API_KEY;
         const response = await fetch('http://localhost:5001/api/crop-analysis', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...userInputData, language }),
+          body: JSON.stringify({ ...userInputData, language: userInputData.language || language, apiKey }),
         });
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Failed to fetch recommendations: ${errorText}`);
         }
-        const data = await response.json();
-        if (!data.recommendedCrops) {
-          throw new Error('No recommendations found in response');
+
+        // Check if response is PDF
+        const contentType = response.headers.get('content-type');
+        if (contentType !== 'application/pdf') {
+          throw new Error('Received unexpected response format. Expected PDF.');
         }
-        setRecommendations(data.recommendedCrops);
+
+        // Handle PDF download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'farm_advisory_report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        // Set a success message
+        setRecommendations([{ cropName: 'Report Downloaded', reasoning: 'The farm advisory report has been downloaded as a PDF file in your selected language.' }]);
+        toast.success('Report downloaded successfully!');
       } catch (err) {
         console.error('Error fetching recommendations:', err);
         setError(err.message || 'Unknown error occurred');

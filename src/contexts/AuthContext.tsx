@@ -13,6 +13,7 @@ interface UserInputData {
   season: string;
   waterFacility: string;
   duration: string;
+  language?: string;
 }
 
 interface AuthContextType {

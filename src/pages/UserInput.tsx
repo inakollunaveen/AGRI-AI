@@ -56,6 +56,7 @@ const UserInput = () => {
     season: "",
     waterFacility: "",
     duration: "",
+    language: "en", // Default to English
   });
   const [loading, setLoading] = useState(false);
   const { saveUserInputData } = useAuth();
@@ -164,6 +165,26 @@ const UserInput = () => {
         { value: "medium", label: translatedLabels.medium || "Medium term (3-6 months)" },
         { value: "long", label: translatedLabels.long || "Long term (6+ months)" }
       ]
+    },
+    {
+      key: "language",
+      label: "Language",
+      icon: null,
+      type: "select",
+      options: [
+        { value: "en", label: "English" },
+        { value: "hi", label: "हिंदी" },
+        { value: "bn", label: "বাংলা" },
+        { value: "te", label: "తెలుగు" },
+        { value: "mr", label: "मराठी" },
+        { value: "ta", label: "தமிழ்" },
+        { value: "ur", label: "اردو" },
+        { value: "gu", label: "ગુજરાતી" },
+        { value: "kn", label: "ಕನ್ನಡ" },
+        { value: "or", label: "ଓଡ଼ିଆ" },
+        { value: "ml", label: "മലയാളം" },
+        { value: "pa", label: "ਪੰਜਾਬੀ" },
+      ]
     }
   ];
 
@@ -185,7 +206,7 @@ const UserInput = () => {
               {formFields.map((field) => (
                 <div key={field.key} className="space-y-2">
                   <Label htmlFor={field.key} className="flex items-center gap-2 text-sm font-medium">
-                    <field.icon className="h-4 w-4 text-primary" />
+                    {field.icon && <field.icon className="h-4 w-4 text-primary" />}
                     {field.label}
                   </Label>
                   {field.type === "input" ? (
